@@ -11,6 +11,33 @@ Principal (Host)
 └── own pages → Pokédex Grid (index.vue)
 ```
 
+```mermaid
+flowchart LR
+  User([Browser]) --> Host
+
+  subgraph Host["Host: Nuxt 4 SPA"]
+    Pages["Pokédex page"]
+    Telemetry["useRemoteTelemetry"]
+  end
+
+  subgraph CDN["Vercel CDN (versioned, immutable)"]
+    DS["Design System<br/>BaseNavbar, BaseButton, BaseCard..."]
+    HV["Havy<br/>PokemonDetailCard"]
+  end
+
+  Host -- "runtime import (Module Federation)" --> DS
+  Host -- "runtime import (Module Federation)" --> HV
+  Telemetry -. "load time (ms)" .-> Host
+```
+
+## Related repos
+
+| Repo | Role | Live |
+|---|---|---|
+| [`design-system`](https://github.com/theussoares/design-system) | Remote: reusable UI components|
+| [`havy`](https://github.com/theussoares/havy) | Remote: Pokémon detail feature | n/a |
+| **this repo** | Host: orchestrates both remotes | [demo](https://principal-rho.vercel.app) |
+
 The Host **never bundles** remote code. Components are loaded at runtime from CDN-hosted versioned artifacts.
 
 ## Tech Stack
